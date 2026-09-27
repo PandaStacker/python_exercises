@@ -50,3 +50,19 @@ def sort_by_many(
     """
     raise NotImplementedError
 
+
+if __name__ == "__main__":
+    sample_data = [{"id": 1, "val": 10}, {"id": 2, "val": 5}, {"id": 3, "val": 10}]
+
+    print("--- Testing group_by ---")
+    try:
+        print(group_by(sample_data, key=lambda x: x["val"]))
+    except Exception as e:
+        print(f"Error: {e!r}")
+
+    print("\n--- Testing partition ---")
+    try:
+        print(partition(lambda x: x["val"] > 5, sample_data))
+    except Exception as e:
+        print(f"Error: {e!r}")
+

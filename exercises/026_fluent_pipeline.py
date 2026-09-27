@@ -86,3 +86,13 @@ def mapping(function: Callable[[T], U]) -> Callable[[Pipeline[T]], Pipeline[U]]:
 def filtering(predicate: Callable[[T], bool]) -> Callable[[Pipeline[T]], Pipeline[T]]:
     """Return a stage that calls Pipeline.where with predicate."""
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    print("--- Testing fluent pipeline ---")
+    try:
+        p = Pipeline.of(1, 2, 3, 4)
+        result = p.map(lambda x: x * 2).where(lambda x: x > 4).reduce(0, lambda a, b: a + b)
+        print("Pipeline result:", result)
+    except Exception as e:
+        print(f"Error: {e!r}")

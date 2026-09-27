@@ -50,3 +50,21 @@ def memoize_unary(function: Callable[[T], R]) -> Callable[[T], R]:
     """
     raise NotImplementedError
 
+
+if __name__ == "__main__":
+    print("--- Testing make_counter ---")
+    try:
+        counter = make_counter(start=10, step=2)
+        print("counter():", counter())
+        print("counter():", counter())
+    except Exception as e:
+        print(f"Error: {e!r}")
+
+    print("\n--- Testing make_running_average ---")
+    try:
+        avg = make_running_average()
+        print("avg(10):", avg(10))
+        print("avg(20):", avg(20))
+    except Exception as e:
+        print(f"Error: {e!r}")
+

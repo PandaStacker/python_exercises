@@ -69,3 +69,13 @@ def process_with_progress(
     If worker raises, let the error propagate and do not advance that item.
     """
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    print("--- Testing rich terminal ---")
+    try:
+        console = Console()
+        tasks = [Task(1, "Fix bug", "Alice", False)]
+        render_dashboard(tasks, console)
+    except Exception as e:
+        print(f"Error: {e!r}")

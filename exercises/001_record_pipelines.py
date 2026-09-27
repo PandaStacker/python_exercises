@@ -1,4 +1,4 @@
-"""001 — Record pipelines
+"""001_RecordPipelines 
 
 Real programs rarely transform one perfect value at a time. They receive a
 collection of imperfect records, normalize each record, discard unwanted
@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping
 from typing import Any
+import traceback
 
 
 # There is another way of doing this now, with an @ tag, funny that the AI doesn't
@@ -22,9 +23,8 @@ from typing import Any
 # No there isn't, because ABC and the @abstractmethod tag is only for classes. Well,
 # there might be, but this isn't it.
 
-# TODO conceive what a computer which can really embrace its GPU does with this. Because
-# all of these are tasks you can run in parallel, none of the data depends on mutations of
-# other data. Just give a GPU chunks and it can blast millions of columns in seconds.
+# TODO how do we give this to the GPU in Python? Would we have to just write  compute
+# shader? A shame, if so, easily chunkable to a GPU.
 def normalize_users(records: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
     """Return new, normalized dictionaries for active users.
 
@@ -36,19 +36,25 @@ def normalize_users(records: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]
 
     r_list = []
     for record in records:
-        r_dict = {}
-        if "active" in record:
-            if record["active"] == False:
-                continue
-        r_dict["name"] = record["name"].strip()
-        r_dict["email"] = record["email"].strip().lower()
-        for tag in record["tags"]:
-            if not tag:
-                continue
-            if tag in r_dict["tags"]:
-                continue
+        if not record.get("active", True):
+            continue
 
-            r_dict["tags"].append(tag.strip().lower())
+        r_dict = {
+            "name": record["name"].strip(),
+            "email": record["email"].strip().lower()
+        }
+
+        if "tags" in record:
+            r_dict["tags"] = [tag.strip().lower() for tag in record["tags"]]
+
+        """ old way:
+        if "tags" in record:
+            for tag in record["tags"]:
+                if "tags" not in r_dict:
+                    r_dict["tags"] = [tag.strip().lower()]
+                else:
+                    r_dict["tags"].append(tag.strip().lower())
+        """
 
         r_list.append(r_dict)
 
@@ -68,11 +74,61 @@ def index_by_email(users: Iterable[Mapping[str, Any]]) -> dict[str, Mapping[str,
         if email in r_dict:
             raise ValueError(f"duplicate email: <{email}>")
 
-        r_dict[email] = user # how do we either indicate the rest or...? Just point it to the whole thing? It is the same type
+        r_dict[email] = user # how do we either indicate the rest or...?
+        # Just point it to the whole thing? It is the same type
+        # it's supposed to be a mapping, so yes, just the whole thing
 
     return r_dict
 
 def count_tags(users: Iterable[Mapping[str, Any]]) -> dict[str, int]:
-    """Count users per tag and return keys in alphabetical insertion order."""
-    raise NotImplementedError
+    """Count users per tag and return keys in alphabetical insertion order.
+    note: how do we return them in alphabetical insertion order in a dict?
+    Maybe AI does suck at this."""
+    # okay so create the dict of tags and counts, increment each count when we find a tag,
+    # that tag finding process is basically automated by the dict
+    return_dict = {}
+    for user in users:
+        for tag in user["tags"]:
+            if tag in return_dict:
+                return_dict[tag] += 1
+            else:
+                return_dict[tag] = 1
 
+    return return_dict
+
+if __name__ == "__main__":
+    test_records = [
+        {"name": " Alice ", "email": "ALICE@example.com", "active": True, "tags": ["admin", " user", ""]},
+        {"name": " Bob", "email": "bob@example.com", "active": False, "tags": ["guest"]},
+        {"name": "Charlie ", "email": "CHARLIE@example.com", "tags": ["admin", "staff"]}
+    ]
+
+    print("--- Testing normalize_users ---")
+    try:
+        normalized = normalize_users(test_records)
+        for u in normalized:
+            print(u)
+    except Exception as e:
+        print(f"normalize_users raised an error: {e!r}")
+        traceback.print_exc()
+
+    print("\n--- Testing index_by_email ---")
+    try:
+        # Using a clean list of dicts that we know works since normalize_users might error out
+        clean_records = [
+            {"name": "Alice", "email": "alice@example.com", "tags": ["admin"]},
+            {"name": "Charlie", "email": "charlie@example.com", "tags": ["admin", "staff"]}
+        ]
+        indexed = index_by_email(clean_records)
+        for email, u in indexed.items():
+            print(f"{email}: {u}")
+    except Exception as e:
+        print(f"index_by_email raised an error: {e!r}")
+
+    print("\n--- Testing count_tags ---")
+    try:
+        counts = count_tags(clean_records)
+        for t, count in counts.items():
+            print(f"{t}: {count}")
+    except Exception as e:
+        print(f"count_tags raised an error: {e!r}")

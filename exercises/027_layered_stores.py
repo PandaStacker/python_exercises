@@ -112,3 +112,14 @@ def temporary_value(store: Store[T], key: str, value: T) -> Iterator[Store[T]]:
     """
     raise NotImplementedError
     yield store
+
+
+if __name__ == "__main__":
+    print("--- Testing layered stores ---")
+    try:
+        store = MemoryStore()
+        ns_store = NamespacedStore(store, "test")
+        ns_store.set("key", "value")
+        print("ns_store.get('key'):", ns_store.get("key"))
+    except Exception as e:
+        print(f"Error: {e!r}")

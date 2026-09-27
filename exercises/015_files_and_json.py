@@ -68,3 +68,12 @@ def save_tasks(path: str | Path, tasks: Iterable[Task]) -> None:
     """
     raise NotImplementedError
 
+
+if __name__ == "__main__":
+    print("--- Testing files and json ---")
+    try:
+        t = Task(id=1, title="Test Task", tags=("work",))
+        print(task_to_dict(t))
+    except Exception as e:
+        print(f"Error: {e!r}")
+

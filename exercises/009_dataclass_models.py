@@ -83,3 +83,15 @@ class Cart:
         """
         raise NotImplementedError
 
+
+if __name__ == "__main__":
+    print("--- Testing dataclasses ---")
+    try:
+        m1 = Money(10.50, "USD")
+        item = LineItem("Widget", 2, m1)
+        cart = Cart()
+        cart.add(item)
+        print(cart)
+    except Exception as e:
+        print(f"Error: {e!r}")
+

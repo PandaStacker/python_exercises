@@ -78,3 +78,19 @@ def invoke(
     """
     raise NotImplementedError
 
+
+if __name__ == "__main__":
+    print("--- Testing format_address ---")
+    try:
+        print(format_address("Alice", city="Wonderland", country="UK"))
+    except Exception as e:
+        print(f"Error: {e!r}")
+
+    print("\n--- Testing merge_settings ---")
+    try:
+        base = {"theme": "light", "port": 8080}
+        override = {"port": 9000}
+        print(merge_settings(base, override, debug=True))
+    except Exception as e:
+        print(f"Error: {e!r}")
+

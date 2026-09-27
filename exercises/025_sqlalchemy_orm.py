@@ -91,3 +91,16 @@ def delete_project(session: Session, project_id: int) -> bool:
     Do not issue a separate Issue delete and do not commit.
     """
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    print("--- Testing sqlalchemy orm ---")
+    try:
+        from sqlalchemy import create_engine
+        engine = create_engine("sqlite:///:memory:")
+        Base.metadata.create_all(engine)
+        with Session(engine) as session:
+            p = create_project(session, "Project 1", ["Issue 1"])
+            print("Project created:", p)
+    except Exception as e:
+        print(f"Error: {e!r}")

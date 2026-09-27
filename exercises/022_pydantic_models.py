@@ -87,3 +87,12 @@ REGISTRATION_LIST = TypeAdapter(list[Registration])
 def parse_registrations_json(text: str) -> list[Registration]:
     """Validate a JSON array through REGISTRATION_LIST.validate_json."""
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    print("--- Testing pydantic models ---")
+    try:
+        reg = Registration(username="user123", password="password1", password_repeat="password1")
+        print("Registration dump:", reg.model_dump())
+    except Exception as e:
+        print(f"Error: {e!r}")

@@ -54,3 +54,16 @@ def retry(
     """
     raise NotImplementedError
 
+
+if __name__ == "__main__":
+    print("--- Testing decorators ---")
+    
+    @count_calls
+    def sample_func():
+        pass
+        
+    try:
+        sample_func()
+    except Exception as e:
+        print(f"Error: {e!r}")
+

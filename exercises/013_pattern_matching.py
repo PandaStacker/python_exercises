@@ -65,3 +65,14 @@ def execute(position: tuple[int, int], command: Command) -> tuple[tuple[int, int
     """
     raise NotImplementedError
 
+
+if __name__ == "__main__":
+    print("--- Testing pattern matching ---")
+    try:
+        cmd = parse_command("move north 5")
+        print("Parsed:", cmd)
+        pos, msg = execute((0, 0), cmd)
+        print("New position:", pos, "Msg:", msg)
+    except Exception as e:
+        print(f"Error: {e!r}")
+

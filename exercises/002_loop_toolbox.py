@@ -56,3 +56,23 @@ def active_names(records: Iterable[Mapping[str, Any]]) -> list[str]:
 def count_nested_tags(users: Iterable[Mapping[str, Any]]) -> dict[str, int]:
     """Count tags with nested loops; rebuild via sorted(counts.items())."""
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    sample_users = [
+        {"name": "Alice", "active": True, "tags": ["admin", "user"]},
+        {"name": "Bob", "active": False, "tags": ["guest"]},
+        {"name": "Charlie", "active": True, "tags": ["user"]}
+    ]
+
+    print("--- Testing numbered_names ---")
+    try:
+        print(numbered_names(sample_users, start=1))
+    except Exception as e:
+        print(f"Error: {e!r}")
+
+    print("\n--- Testing attach_scores ---")
+    try:
+        print(attach_scores(sample_users, [100, 85, 95]))
+    except Exception as e:
+        print(f"Error: {e!r}")

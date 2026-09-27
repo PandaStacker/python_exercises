@@ -68,3 +68,13 @@ class Product:
     def final_price(self) -> Decimal:
         """Return `price - discount`, never falling below zero."""
         raise NotImplementedError
+
+
+if __name__ == "__main__":
+    print("--- Testing descriptors ---")
+    try:
+        p = Product("Widget", 10.50)
+        print("Product name:", p.name)
+        print("Final price:", p.final_price)
+    except Exception as e:
+        print(f"Error: {e!r}")

@@ -57,3 +57,15 @@ def scale_channels(image: ArrayLike, gains: ArrayLike) -> NDArray[np.float64]:
     clip values to `[0, 255]`, and return float64 without modifying the image.
     """
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    print("--- Testing numpy arrays ---")
+    try:
+        arr = np.array([[1.0, 2.0], [3.0, 4.0]])
+        print("Input array:")
+        print(arr)
+        print("standardize_columns output:")
+        print(standardize_columns(arr))
+    except Exception as e:
+        print(f"Error: {e!r}")

@@ -64,3 +64,12 @@ def windowed(iterable: Iterable[T], size: int) -> Iterator[tuple[T, ...]]:
     raise NotImplementedError
     yield
 
+
+if __name__ == "__main__":
+    print("--- Testing lazy pipelines ---")
+    try:
+        cd = Countdown(5)
+        print("take(3, cd):", take(3, cd))
+    except Exception as e:
+        print(f"Error: {e!r}")
+

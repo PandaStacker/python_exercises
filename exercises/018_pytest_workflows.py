@@ -81,3 +81,9 @@ def test_fixture_is_fresh(sample_rows: list[dict[str, object]]) -> None:
     fixture's function scope rather than sharing global mutable state.
     """
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    print("--- Running pytest ---")
+    import sys
+    sys.exit(pytest.main(["-v", __file__]))

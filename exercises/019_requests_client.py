@@ -80,3 +80,14 @@ class ApiClient:
         keep-alive chunks.  Translate RequestException as in `get_json`.
         """
         raise NotImplementedError
+
+
+if __name__ == "__main__":
+    print("--- Testing requests client ---")
+    try:
+        client = ApiClient("https://example.com/", "test_token")
+        print("Headers created:")
+        # Should raise NotImplementedError if not done
+        print(client._headers())
+    except Exception as e:
+        print(f"Error: {e!r}")

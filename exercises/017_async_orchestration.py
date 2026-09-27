@@ -71,3 +71,18 @@ async def with_timeout(
     if close is not None:
         close()
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    print("--- Testing async orchestration ---")
+    async def test():
+        async def work(x): return x * 2
+        try:
+            res = await bounded_map(work, [1, 2, 3], limit=2)
+            print("bounded_map:", res)
+        except Exception as e:
+            print(f"bounded_map Error: {e!r}")
+    try:
+        asyncio.run(test())
+    except Exception as e:
+        print(f"Error: {e!r}")

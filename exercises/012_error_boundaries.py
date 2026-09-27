@@ -63,3 +63,18 @@ def load_inventory(lines: Iterable[str]) -> list[InventoryItem]:
     """
     raise NotImplementedError
 
+
+if __name__ == "__main__":
+    print("--- Testing error boundaries ---")
+    lines = [
+        "SKU123,5,10.00",
+        " BADSKU , -1, 5",
+        "SKU456,2,20.50"
+    ]
+    try:
+        valid, errors = parse_inventory(lines)
+        print("Valid items:", valid)
+        print("Errors:", errors)
+    except Exception as e:
+        print(f"Error: {e!r}")
+

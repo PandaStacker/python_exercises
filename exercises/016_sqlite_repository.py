@@ -73,3 +73,14 @@ class TaskRepository:
         raise NotImplementedError
         yield self
 
+
+if __name__ == "__main__":
+    print("--- Testing sqlite repository ---")
+    try:
+        conn = sqlite3.connect(":memory:")
+        repo = TaskRepository(conn)
+        repo.create_schema()
+        repo.add("Test Task")
+    except Exception as e:
+        print(f"Error: {e!r}")
+

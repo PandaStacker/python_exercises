@@ -60,3 +60,22 @@ def monthly_revenue(sales: pd.DataFrame) -> pd.Series:
     a datetime column produced by clean_sales.
     """
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    print("--- Testing pandas analysis ---")
+    try:
+        df = pd.DataFrame({
+            "order_id": [1],
+            "customer": ["Alice"],
+            "region": ["North"],
+            "quantity": [2],
+            "unit_price": [10.5],
+            "purchased_at": ["2023-01-01T12:00:00Z"]
+        })
+        print("Input sales DataFrame:")
+        print(df)
+        print("\nCleaned sales:")
+        print(clean_sales(df))
+    except Exception as e:
+        print(f"Error: {e!r}")

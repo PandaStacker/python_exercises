@@ -70,3 +70,13 @@ class Playlist(MutableSequence[str]):
     def __eq__(self, other: object) -> bool:
         raise NotImplementedError
 
+
+if __name__ == "__main__":
+    print("--- Testing data model ---")
+    try:
+        pl = Playlist(["Song 1", "Song 2"])
+        print("Playlist:", pl)
+        print("Length:", len(pl))
+    except Exception as e:
+        print(f"Error: {e!r}")
+

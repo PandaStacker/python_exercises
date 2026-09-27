@@ -71,3 +71,14 @@ def rollback_on_error(sequence: MutableSequence[T]) -> Iterator[MutableSequence[
     raise NotImplementedError
     yield sequence
 
+
+if __name__ == "__main__":
+    print("--- Testing context managers ---")
+    my_map = {"theme": "light"}
+    try:
+        with temporary_value(my_map, "theme", "dark"):
+            print("Inside with:", my_map)
+        print("Outside with:", my_map)
+    except Exception as e:
+        print(f"Error: {e!r}")
+

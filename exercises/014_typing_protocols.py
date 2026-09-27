@@ -71,3 +71,15 @@ def copy_matching(
     """
     raise NotImplementedError
 
+
+if __name__ == "__main__":
+    print("--- Testing typing protocols ---")
+    try:
+        class DummyItem:
+            def __init__(self, id):
+                self.id = id
+        repo = InMemoryRepository()
+        repo.add(DummyItem("123"))
+    except Exception as e:
+        print(f"Error: {e!r}")
+
