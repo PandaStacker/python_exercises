@@ -100,7 +100,7 @@ if __name__ == "__main__":
     test_records = [
         {"name": " Alice ", "email": "ALICE@example.com", "active": True, "tags": ["admin", " user", ""]},
         {"name": " Bob", "email": "bob@example.com", "active": False, "tags": ["guest"]},
-        {"name": "Charlie ", "email": "CHARLIE@example.com", "tags": ["admin", "staff"]}
+        {"name": "Charlie ", "email": "CHARLIE@example.com", "tags": ["admin", "staff"]},
     ]
 
     print("--- Testing normalize_users ---")

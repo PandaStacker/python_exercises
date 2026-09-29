@@ -31,6 +31,10 @@ def format_address(
 
     Omit the region and its comma when region is `None` or an empty string.
     `name` is positional-only; all address fields are keyword-only.
+    
+    Elaboration: 
+    - The `/` means `name` MUST be passed by position (e.g. `format_address("Alice", ...)`).
+    - The `*` means everything after it MUST be passed by keyword (e.g. `city="Paris"`).
     """
     raise NotImplementedError
 
@@ -45,6 +49,10 @@ def merge_settings(
 
     Start with `base`, apply every positional override from left to right, and
     finally apply keyword changes.  Later values win.
+    
+    Elaboration:
+    - `*overrides` collects any extra positional arguments into a tuple.
+    - `**changes` collects any extra keyword arguments into a dictionary.
     """
     raise NotImplementedError
 
@@ -61,6 +69,11 @@ def update_profile(
 
     Passing `None` is an explicit update and must not be confused with omitting
     a field.  Preserve unrelated keys from the original mapping.
+    
+    Elaboration:
+    - `MISSING` is a custom object we created at the top of the file.
+    - We use it instead of `None` as the default value so we can tell the difference
+      between a user omitting the argument and a user explicitly passing `None`.
     """
     raise NotImplementedError
 
@@ -75,6 +88,10 @@ def invoke(
     """Forward args/kwargs to `function`, then optionally transform its result.
 
     `transform` belongs to `invoke`; do not forward it to `function`.
+    
+    Elaboration:
+    This function acts as a wrapper. It takes a function, calls it with whatever
+    arguments were provided, and then optionally runs a transformation on the output.
     """
     raise NotImplementedError
 
