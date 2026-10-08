@@ -27,7 +27,7 @@ what it returns. It simply means you are passing a function as an argument.
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from typing import Any
+from typing import Any, Protocol
 
 # you can define the start IN the definition, interesting specificity.
 # Does python throw an error if we pass in something else? No, but will
@@ -35,7 +35,7 @@ from typing import Any
 def numbered_names(users: Iterable[Mapping[str, Any]], start: int = 1) -> list[str]:
     """Use `enumerate(..., start=start)` to return labels like `1. Ada`."""
     return_list = []
-    for index, user in enumerate(users, start=1):
+    for index, user in enumerate(users, start): # we could also write start=1 here, but as a new var
         return_list.append(f"{index}. {user}")
 
     return return_list
@@ -59,6 +59,8 @@ def first_user_with_tag(users: Iterable[Mapping[str, Any]], tag: str) -> Mapping
     return None
 
 
+# you know these sequences and maps and Any's would be clearer with more names
+# surprised Python doesn't allow that
 def process_users_in_chunks(users: Sequence[Mapping[str, Any]], size: int) -> list[list[Mapping[str, Any]]]:
     """Chunk with `range` and slicing; require size > 0 with a clear ValueError.
     
@@ -67,16 +69,48 @@ def process_users_in_chunks(users: Sequence[Mapping[str, Any]], size: int) -> li
     an API that only accepts 100 users per request, you chunk the list into batches
     of 100 before looping through those batches to make the API requests.
     """
-    # TODO:
-    # 1. Validate input: if size <= 0, raise ValueError.
-    # 2. Use a for loop with `range(0, len(users), size)` to get start indices.
-    # 3. Use list slicing `users[start:start+size]` to extract each chunk.
-    # 4. Return the list of chunks
 
-    raise NotImplementedError
+    if size == 0:
+        raise RuntimeError # cannot process size 0
+    return_list = []
+    chunk_list = []
+    total_index = 0
+
+    for user in users:
+        chunk_list.append(user)
+        i += 1
+        if i == size:
+            # reset chunk
+            i = 0
+            return_list.append(chunk_list)
+            chunk_list = [] # worry not, this works, chunk_list.clear() would do the wrong thing here.
+            # all lists are just pointers to their items, and once placed elsewhere, the pointer may be
+            # pointed elsewhere without worry. It's crazy how much we should know assembly. Not C, but
+            # assembly.
+
+        elif i > size : # shouldn't be possible
+            raise RuntimeError
+        else:
+            raise RuntimeError
+
+        total_index += 1
+
+    return return_list
+
+    """
+    How do we do this with slices? We should be able to just increment in size-sized slices until we're done.
+    I don't know how to combine it with the for loop though.
+    """
 
 
-def collect_pages(fetch_page: Callable[[str | None], tuple[Iterable[Mapping[str, Any]], str | None]]) -> list[Mapping[str, Any]]:
+
+
+class PageFetcher(Protocol):
+    """A function that fetches a page of records using a pagination token."""
+    def __call__(self, token: str | None) -> tuple[Iterable[Mapping[str, Any]], str | None]: ...
+
+
+def collect_pages(fetch_page: PageFetcher) -> list[Mapping[str, Any]]:
     """Use `while` to fetch from token None through a page returning next None.
     
     Elaboration: APIs often return large datasets in "pages" (e.g., 50 records at a time)
@@ -85,13 +119,6 @@ def collect_pages(fetch_page: Callable[[str | None], tuple[Iterable[Mapping[str,
     call the API, passing the previous bookmark each time, until the API returns a None
     token, indicating there are no more pages.
     """
-    # TODO:
-    # 1. Initialize an empty list for collected users and a token variable (starting as None).
-    # 2. Use a while loop that continues as long as you still have a token to fetch (or for the very first fetch).
-    # 3. Inside the loop, call fetch_page(token) to get the page's users and the new next token.
-    # 4. Add the users to your total list.
-    # 5. Update the token variable with the new next token. The loop ends when the returned token is None.
-    # 6. Return the total list of users.
     raise NotImplementedError
 
 
@@ -101,28 +128,45 @@ def active_names(records: Iterable[Mapping[str, Any]]) -> list[str]:
     for record in records:
         if record.active is False:
             continue
-        else:
-            return_list.append(record)
+
+        return_list.append(record)
 
     return return_list
 
 
 
-def count_nested_tags(users: Iterable[Mapping[str, Any]]) -> dict[str, int]:
+def count_unique_tags(users: Iterable[Mapping[str, Any]]) -> dict[str, int]:
     """Count tags with nested loops; rebuild via sorted(counts.items()).
-    
+
     Elaboration: The "nested" part refers to the loops, not the tags themselves. 
     Each user has a single flat list of tags (e.g., {"tags": ["admin", "user"]}). 
     To count all tags across all users, you need a loop to iterate through the users, 
     and a *nested* (inner) loop to iterate through the tags of each user.
+
+    Human note: I'm taking this to mean we want to count number of unique tags? Renaming 
+    it as such. I guess we could also want total tag count?
     """
-    # TODO:
-    # 1. Initialize a dictionary to keep tag counts.
-    # 2. Outer loop: iterate over each `user` in `users`.
-    # 3. Inner loop: iterate over each `tag` in `user["tags"]`.
-    # 4. Increment the count for the current tag in your dictionary.
-    # 5. Build and return a new dictionary from the alphabetically sorted items: dict(sorted(counts.items())).
-    raise NotImplementedError
+    unique_tags = {}
+    for user in users:
+        for tag in user.tags:
+            if tag not in unique_tags:
+                unique_tags[tag] = 1
+            else:
+                unique_tags[tag] += 1
+
+    return unique_tags
+
+def count_total_tags(users: Iterable[Mapping[str, Any]]) -> int:
+    """
+        Simply counts total overall tags. Not sure how useful, but occasionally you'd want
+        to know, right?
+    """
+    total_tags = 0
+    for user in users:
+        for _ in user.tags:
+            total_tags += 1
+
+    return total_tags
 
 
 if __name__ == "__main__":
@@ -136,6 +180,7 @@ if __name__ == "__main__":
         {"name": "Catherine", "active": True, "tags": ["user", "3"]},
         {"name": "Cathy", "active": True, "tags": ["user", "2"]},
         {"name": "Bobby", "active": True, "tags": ["guest"]},
+        {"name": "Robert", "active": True, "tags": ["bugs"]},
     ]
 
     print("--- Testing numbered_names ---")
